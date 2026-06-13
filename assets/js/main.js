@@ -178,4 +178,149 @@
     // no GSAP → make sure everything is visible
     $$("[data-rise]").forEach(el => { el.style.opacity = 1; el.style.transform = "none"; });
   }
+
+  /* ---------- 8b. dress-code randomiser game --------------------- */
+  (function dressGame() {
+    const fam = $(".js-family");
+    const spin = $(".js-spin");
+    if (!fam) return;
+
+    const PALETTE = [
+      { name: "Marigold", hex: "#E9A53B" }, { name: "Maroon", hex: "#7A2E2E" },
+      { name: "Gold", hex: "#C9A24B" },     { name: "Terracotta", hex: "#D4603A" },
+      { name: "Emerald", hex: "#1F6B4F" },  { name: "Royal Blue", hex: "#2E4C9A" },
+      { name: "Magenta", hex: "#A12E6E" },  { name: "Mustard", hex: "#CC9A12" },
+      { name: "Ivory", hex: "#EFE3CC" },    { name: "Deep Teal", hex: "#1E6E73" },
+      { name: "Plum", hex: "#5B2A4E" },     { name: "Coral", hex: "#E27A5F" },
+      { name: "Bottle Green", hex: "#274D3A" }, { name: "Saffron", hex: "#E68A2E" },
+    ];
+    const SKINS = ["#E7B68F", "#D69A6E", "#C98A57", "#B5764A"];
+    const MEMBERS = [
+      { role: "You", kind: "adult" },
+      { role: "Your plus-one", kind: "adult" },
+      { role: "Little one", kind: "kid" },
+      { role: "Tiny one", kind: "kid" },
+    ];
+    const pick = a => a[Math.floor(Math.random() * a.length)];
+    const isLight = hex => {
+      const c = parseInt(hex.slice(1), 16);
+      return (0.299 * (c >> 16) + 0.587 * ((c >> 8) & 255) + 0.114 * (c & 255)) > 150;
+    };
+    const ink = hex => (isLight(hex) ? "#2a211a" : "#f6efe3");
+
+    function personSVG(top, bottom, skin) {
+      return `<svg viewBox="0 0 80 124" class="person" xmlns="http://www.w3.org/2000/svg">
+        <ellipse cx="40" cy="118" rx="20" ry="3.5" fill="rgba(0,0,0,.12)"/>
+        <path d="M26,72 L21,111 L33,111 L40,80 L47,111 L59,111 L54,72 Z" fill="${bottom}"/>
+        <rect x="20" y="108" width="13" height="6" rx="3" fill="#3a2c22"/>
+        <rect x="47" y="108" width="13" height="6" rx="3" fill="#3a2c22"/>
+        <path d="M22,46 Q40,35 58,46 L56,76 L24,76 Z" fill="${top}"/>
+        <path d="M23,46 L14,72 L20,74 L28,52 Z" fill="${top}"/>
+        <path d="M57,46 L66,72 L60,74 L52,52 Z" fill="${top}"/>
+        <circle cx="17" cy="73" r="3.6" fill="${skin}"/>
+        <circle cx="63" cy="73" r="3.6" fill="${skin}"/>
+        <rect x="36" y="33" width="8" height="11" fill="${skin}"/>
+        <circle cx="40" cy="24" r="13" fill="${skin}"/>
+        <path d="M26,23 Q27,7 40,7 Q53,7 54,23 Q48,15 40,15 Q32,15 26,23 Z" fill="#22150f"/>
+      </svg>`;
+    }
+
+    function render() {
+      fam.innerHTML = MEMBERS.map(m => {
+        let top = pick(PALETTE), bottom = pick(PALETTE);
+        while (bottom.hex === top.hex) bottom = pick(PALETTE);
+        const skin = pick(SKINS);
+        return `<div class="member member--${m.kind}">
+          <div class="member__fig">${personSVG(top.hex, bottom.hex, skin)}</div>
+          <p class="member__role">${m.role}</p>
+          <div class="member__combo">
+            <span class="swatch" style="background:${top.hex};color:${ink(top.hex)}">Top · ${top.name}</span>
+            <span class="swatch" style="background:${bottom.hex};color:${ink(bottom.hex)}">Bottom · ${bottom.name}</span>
+          </div>
+        </div>`;
+      }).join("");
+
+      if (window.gsap && !reduce) {
+        gsap.fromTo(fam.querySelectorAll(".member"),
+          { y: 16, opacity: 0, scale: 0.94 },
+          { y: 0, opacity: 1, scale: 1, duration: 0.5, ease: "back.out(1.5)", stagger: 0.08 });
+        gsap.fromTo(fam.querySelectorAll(".person"),
+          { rotation: -8 }, { rotation: 0, duration: 0.6, ease: "elastic.out(1,0.5)", stagger: 0.08 });
+      }
+    }
+
+    if (spin) {
+      spin.addEventListener("click", () => {
+        spin.classList.add("is-spinning");
+        render();
+        setTimeout(() => spin.classList.remove("is-spinning"), 550);
+      });
+    }
+    render(); // initial fit on load
+  })();
+
+  /* ---------- 9. cute gallery jumble (every 2s, while in view) ----- */
+  if (window.gsap && window.Flip && !reduce && grid) {
+    gsap.registerPlugin(Flip);
+    const rand = (a, b) => a + Math.random() * (b - a);
+
+    function jumble() {
+      const nodes = [...grid.children];
+      if (nodes.length < 3) return;
+      const state = Flip.getState(nodes);
+      // gentle: trade a couple of random pairs (not a full scramble)
+      for (let k = 0; k < 2; k++) {
+        const i = Math.floor(Math.random() * nodes.length);
+        const j = Math.floor(Math.random() * nodes.length);
+        if (i !== j) { const t = nodes[i]; nodes[i] = nodes[j]; nodes[j] = t; }
+      }
+      nodes.forEach(n => grid.appendChild(n));
+      Flip.from(state, {
+        duration: 0.8,
+        ease: "back.out(1.3)",   // bouncy = cute
+        scale: true,
+        stagger: { amount: 0.18, from: "random" },
+      });
+    }
+
+    let timer = null;
+    const galSec = $("#gallery");
+    const io = new IntersectionObserver(entries => {
+      entries.forEach(e => {
+        if (e.isIntersecting && !timer) {
+          timer = setInterval(() => { if (!document.hidden) jumble(); }, 2000);
+        } else if (!e.isIntersecting && timer) {
+          clearInterval(timer); timer = null;
+        }
+      });
+    }, { threshold: 0.15 });
+    if (galSec) io.observe(galSec);
+  }
+
+  /* ---------- 10. critters: peeking cats + Night Fury fly-by ------- */
+  if (window.gsap && !reduce) {
+    const layer = $(".critters");
+    if (layer) {
+      const R = gsap.utils.random;
+
+      // — a couple of cats peek up from the bottom corners —
+      function makeCat(side) {
+        const cat = document.createElement("span");
+        cat.className = "critter critter--cat";
+        cat.textContent = Math.random() < 0.5 ? "🐈" : "🐱";
+        cat.style[side] = "clamp(8px, 5vw, 56px)";
+        layer.appendChild(cat);
+        gsap.set(cat, { yPercent: 125, rotation: side === "left" ? -10 : 10 });
+
+        (function peek() {
+          gsap.timeline({ onComplete: () => gsap.delayedCall(R(4, 11), peek) })
+            .to(cat, { yPercent: 16, duration: 0.7, ease: "back.out(1.7)" })
+            .to(cat, { rotation: side === "left" ? 8 : -8, duration: 0.45, yoyo: true, repeat: 1, ease: "sine.inOut" }, "-=0.2")
+            .to(cat, { yPercent: 125, duration: 0.55, ease: "back.in(1.4)" }, "+=" + R(0.9, 2.4));
+        })();
+      }
+      gsap.delayedCall(R(2, 5), () => makeCat("left"));
+      gsap.delayedCall(R(3, 7), () => makeCat("right"));
+    }
+  }
 })();
