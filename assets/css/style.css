@@ -107,6 +107,37 @@ h2 {
 }
 
 /* =====================================================================
+   MUSIC TOGGLE
+   ===================================================================== */
+.music-toggle {
+  position: fixed; top: clamp(.8rem, 3vw, 1.4rem); right: clamp(.8rem, 3vw, 1.4rem);
+  z-index: 8; display: inline-flex; align-items: center; gap: .5rem;
+  padding: .55rem .9rem .55rem .8rem; cursor: pointer;
+  background: rgba(20,16,12,.42); color: var(--cream);
+  border: 1px solid rgba(246,239,227,.32); border-radius: 100px;
+  backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
+  font-family: var(--sans); font-size: .68rem; font-weight: 600;
+  letter-spacing: .18em; text-transform: uppercase;
+  transition: background .2s ease, transform .15s ease, border-color .2s ease;
+}
+.music-toggle:hover { background: rgba(20,16,12,.62); border-color: rgba(246,239,227,.5); }
+.music-toggle:active { transform: scale(.96); }
+.music-toggle__bars { display: inline-flex; align-items: flex-end; gap: 2px; height: 14px; }
+.music-toggle__bars i {
+  width: 2.5px; height: 4px; border-radius: 2px;
+  background: var(--marigold);
+}
+.music-toggle.is-playing .music-toggle__bars i { animation: eq .9s ease-in-out infinite; }
+.music-toggle.is-playing .music-toggle__bars i:nth-child(2) { animation-delay: .15s; }
+.music-toggle.is-playing .music-toggle__bars i:nth-child(3) { animation-delay: .35s; }
+.music-toggle.is-playing .music-toggle__bars i:nth-child(4) { animation-delay: .5s; }
+@keyframes eq { 0%, 100% { height: 4px; } 50% { height: 14px; } }
+.music-toggle:not(.is-playing) .music-toggle__bars i { height: 4px; opacity: .55; }
+.music-toggle__label { line-height: 1; padding-top: 1px; }
+@media (max-width: 420px) { .music-toggle__label { display: none; } .music-toggle { padding: .55rem; } }
+@media (prefers-reduced-motion: reduce) { .music-toggle.is-playing .music-toggle__bars i { animation: none; } }
+
+/* =====================================================================
    COVER
    ===================================================================== */
 .cover {

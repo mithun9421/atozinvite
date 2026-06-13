@@ -99,6 +99,62 @@
     });
   }
 
+  /* ---------- 5b. background music + toggle ---------------------- */
+  (function music() {
+    const audio = document.getElementById("bgm");
+    const btn = document.getElementById("musicToggle");
+    if (!audio || !btn) return;
+    audio.volume = 0.0;
+    const TARGET = 0.42;
+    const KEY = "aoz-music"; // "on" | "off"
+
+    let fadeTimer = null;
+    function fadeTo(target, done) {
+      clearInterval(fadeTimer);
+      fadeTimer = setInterval(() => {
+        const d = target - audio.volume;
+        if (Math.abs(d) < 0.02) { audio.volume = target; clearInterval(fadeTimer); done && done(); }
+        else audio.volume += d * 0.12;
+      }, 40);
+    }
+    function setUI(playing) {
+      btn.classList.toggle("is-playing", playing);
+      btn.setAttribute("aria-pressed", String(playing));
+      btn.setAttribute("aria-label", playing ? "Pause background music" : "Play background music");
+    }
+
+    function play() {
+      audio.play().then(() => {
+        localStorage.setItem(KEY, "on"); setUI(true); fadeTo(TARGET);
+      }).catch(() => setUI(false)); // blocked until a gesture
+    }
+    function pause() {
+      fadeTo(0, () => audio.pause());
+      localStorage.setItem(KEY, "off"); setUI(false);
+    }
+
+    btn.addEventListener("click", () => {
+      if (audio.paused) play(); else pause();
+    });
+
+    // Try to start on first interaction, unless the guest turned it off before.
+    if (localStorage.getItem(KEY) !== "off") {
+      const kick = () => {
+        if (localStorage.getItem(KEY) !== "off" && audio.paused) play();
+        window.removeEventListener("pointerdown", kick);
+        window.removeEventListener("keydown", kick);
+        window.removeEventListener("scroll", kick);
+      };
+      window.addEventListener("pointerdown", kick, { once: true });
+      window.addEventListener("keydown", kick, { once: true });
+      window.addEventListener("scroll", kick, { once: true, passive: true });
+      // best-effort immediate attempt (works if browser allows)
+      play();
+    } else {
+      setUI(false);
+    }
+  })();
+
   /* ---------- 6. progress rail ----------------------------------- */
   const fill = $(".rail__fill");
   function railUpdate() {
