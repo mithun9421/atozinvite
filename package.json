@@ -1,0 +1,10 @@
+{
+  "name": "a-to-z-invite",
+  "version": "1.0.0",
+  "private": true,
+  "description": "A to Z — A Chennai Love Story. Mithun's wedding invitation site.",
+  "scripts": {
+    "dev": "npx --yes serve -l 5050 .",
+    "start": "npx --yes serve -l 5050 ."
+  }
+}
