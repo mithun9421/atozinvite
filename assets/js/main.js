@@ -185,14 +185,25 @@
     const spin = $(".js-spin");
     if (!fam) return;
 
-    const PALETTE = [
-      { name: "Marigold", hex: "#E9A53B" }, { name: "Maroon", hex: "#7A2E2E" },
-      { name: "Gold", hex: "#C9A24B" },     { name: "Terracotta", hex: "#D4603A" },
-      { name: "Emerald", hex: "#1F6B4F" },  { name: "Royal Blue", hex: "#2E4C9A" },
-      { name: "Magenta", hex: "#A12E6E" },  { name: "Mustard", hex: "#CC9A12" },
-      { name: "Ivory", hex: "#EFE3CC" },    { name: "Deep Teal", hex: "#1E6E73" },
-      { name: "Plum", hex: "#5B2A4E" },     { name: "Coral", hex: "#E27A5F" },
-      { name: "Bottle Green", hex: "#274D3A" }, { name: "Saffron", hex: "#E68A2E" },
+    // Curated designer outfits — each top+bottom is a single harmonious pairing
+    // (tonal / earthy / quiet-luxury). No random clashing.
+    const COMBOS = [
+      { top: { name: "Burnt Apricot", hex: "#C8754D" }, bottom: { name: "Toasted Almond", hex: "#B2967A" } },
+      { top: { name: "Sage Mist", hex: "#A7B49A" },     bottom: { name: "Moss Ink", hex: "#4B5742" } },
+      { top: { name: "Rosewater", hex: "#E6C5C0" },     bottom: { name: "Mulberry", hex: "#5C3142" } },
+      { top: { name: "Ecru", hex: "#E7DDC6" },          bottom: { name: "Espresso", hex: "#4A382B" } },
+      { top: { name: "Ochre Sun", hex: "#D29B47" },     bottom: { name: "Deep Olive", hex: "#565030" } },
+      { top: { name: "Powder Sky", hex: "#B6C3CB" },    bottom: { name: "Slate Teal", hex: "#3E565F" } },
+      { top: { name: "Plaster Pink", hex: "#E2C2B2" },  bottom: { name: "Cocoa", hex: "#5D463A" } },
+      { top: { name: "Pistachio Cream", hex: "#C9D2A4" }, bottom: { name: "Bottle Forest", hex: "#2C4438" } },
+      { top: { name: "Marigold Dust", hex: "#DEAC5A" }, bottom: { name: "Aubergine", hex: "#432B3D" } },
+      { top: { name: "Oat Milk", hex: "#E5DBC7" },      bottom: { name: "Petrol Blue", hex: "#2C4A54" } },
+      { top: { name: "Apricot Haze", hex: "#E5B68E" },  bottom: { name: "Rust Umber", hex: "#8A4B33" } },
+      { top: { name: "Lavender Ash", hex: "#B8AEC1" },  bottom: { name: "Indigo Night", hex: "#2F3457" } },
+      { top: { name: "Champagne", hex: "#E2D2A8" },     bottom: { name: "Garnet", hex: "#6D2734" } },
+      { top: { name: "Fennel", hex: "#BEC1A0" },        bottom: { name: "Charcoal Olive", hex: "#3B3B2E" } },
+      { top: { name: "Sand Dune", hex: "#D6C29C" },     bottom: { name: "Teal Spruce", hex: "#2F564F" } },
+      { top: { name: "Coral Blush", hex: "#D8866B" },   bottom: { name: "Mahogany", hex: "#5D3326" } },
     ];
     const SKINS = ["#E7B68F", "#D69A6E", "#C98A57", "#B5764A"];
     const MEMBERS = [
@@ -226,9 +237,11 @@
     }
 
     function render() {
-      fam.innerHTML = MEMBERS.map(m => {
-        let top = pick(PALETTE), bottom = pick(PALETTE);
-        while (bottom.hex === top.hex) bottom = pick(PALETTE);
+      // give each family member a distinct curated outfit
+      const deck = [...COMBOS].sort(() => Math.random() - 0.5);
+      fam.innerHTML = MEMBERS.map((m, idx) => {
+        const c = deck[idx % deck.length];
+        const top = c.top, bottom = c.bottom;
         const skin = pick(SKINS);
         return `<div class="member member--${m.kind}">
           <div class="member__fig">${personSVG(top.hex, bottom.hex, skin)}</div>
