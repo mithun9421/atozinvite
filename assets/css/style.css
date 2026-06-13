@@ -377,8 +377,9 @@ h2 {
 .dresscode__lede { color: #6a5a4c; margin-bottom: 1.4rem; }
 .js-spin { font-size: 1rem; }
 .js-spin.is-spinning { pointer-events: none; opacity: .8; }
-.family { display: grid; grid-template-columns: repeat(2, 1fr); gap: clamp(.7rem, 2.5vw, 1.1rem); margin-top: clamp(1.6rem, 5vh, 2.4rem); }
+.family { display: flex; flex-wrap: wrap; justify-content: center; gap: clamp(.7rem, 2.5vw, 1.1rem); margin-top: clamp(1.6rem, 5vh, 2.4rem); }
 .member {
+  flex: 1 1 140px; max-width: 220px;
   background: var(--cream-2); border: 1px solid rgba(122,46,46,.12);
   border-radius: 18px; padding: clamp(.9rem, 3vw, 1.2rem) .7rem; text-align: center;
 }
@@ -388,7 +389,6 @@ h2 {
 .member__role { font-family: var(--serif); font-size: clamp(.95rem, 3vw, 1.1rem); margin: .5rem 0 .7rem; }
 .member__combo { display: flex; flex-direction: column; gap: .4rem; }
 .swatch { font-size: .7rem; font-weight: 600; letter-spacing: .01em; padding: .5em .5em; border-radius: 9px; }
-@media (min-width: 760px) { .family { grid-template-columns: repeat(4, 1fr); } }
 
 .btn {
   font-family: var(--sans); font-weight: 600; font-size: .92rem;

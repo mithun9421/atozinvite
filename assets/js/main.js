@@ -210,7 +210,6 @@
       { role: "You", kind: "adult" },
       { role: "Your plus-one", kind: "adult" },
       { role: "Little one", kind: "kid" },
-      { role: "Tiny one", kind: "kid" },
     ];
     const pick = a => a[Math.floor(Math.random() * a.length)];
     const isLight = hex => {
