@@ -28,8 +28,9 @@
   $(".js-dress")     && ($(".js-dress").textContent     = D.event.dressCode);
   const dw = $(".closing__date"); if (dw) dw.textContent = D.event.dateWords;
 
-  const mapA = $(".js-map");
-  if (mapA && D.event.mapUrl) { mapA.href = D.event.mapUrl; mapA.target = "_blank"; mapA.rel = "noopener"; mapA.hidden = false; }
+  if (D.event.mapUrl) {
+    $$(".js-map").forEach(a => { a.href = D.event.mapUrl; a.target = "_blank"; a.rel = "noopener"; a.hidden = false; });
+  }
 
   /* ---------- 2. build the A–Z trail ----------------------------- */
   const list = $(".js-trail");

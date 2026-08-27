@@ -186,7 +186,30 @@ h2 {
   margin-top: clamp(1.1rem, 4vh, 2rem);
   letter-spacing: .02em;
 }
-.cover__date { margin-top: clamp(1.6rem, 6vh, 3rem); }
+.cover__date {
+  margin-top: clamp(1.6rem, 6vh, 3rem);
+  display: flex; flex-direction: column; align-items: center; gap: clamp(.9rem, 3vh, 1.4rem);
+}
+.cover__pill {
+  display: inline-flex; align-items: center; gap: .45em;
+  font-family: var(--sans);
+  font-size: clamp(.66rem, 2.6vw, .78rem);
+  font-weight: 600;
+  letter-spacing: .06em;
+  color: var(--cream);
+  background: rgba(212, 96, 58, .22);
+  border: 1px solid rgba(246, 239, 227, .35);
+  padding: .6em 1.3em;
+  border-radius: 100px;
+  text-decoration: none;
+  backdrop-filter: blur(3px);
+  transition: background .25s ease, border-color .25s ease, transform .25s ease;
+}
+.cover__pill:hover, .cover__pill:focus-visible {
+  background: rgba(212, 96, 58, .4);
+  border-color: rgba(246, 239, 227, .65);
+  transform: translateY(-1px);
+}
 .cover__date-big {
   display: inline-block;
   font-family: var(--sans);
