@@ -151,9 +151,9 @@ h2 {
 }
 .cover__bg {
   position: absolute; inset: 0; z-index: -2;
-  background: #0c0a08 url("../photos/photo-01.jpg") center 28% / cover no-repeat;
+  background: #0c0a08 url("../photos/photo-01.jpg") 38% 32% / cover no-repeat;
   filter: grayscale(.35) contrast(1.04);
-  transform: scale(1.08);
+  transform: scale(1.02);
 }
 .cover::after { /* warm cinematic wash */
   content: ""; position: absolute; inset: 0; z-index: -1;

@@ -21,20 +21,15 @@
   const tamil = $(".cover__tamil"); if (tamil) tamil.textContent = D.couple.tamilAccent;
   $(".js-datebig") && ($(".js-datebig").textContent = D.event.dateBig);
 
-  $(".js-when-date") && ($(".js-when-date").textContent = D.event.dateBig);
-  $(".js-when-time") && ($(".js-when-time").textContent = D.event.time);
+  $(".js-when-date") && ($(".js-when-date").textContent = D.event.reception.label);
+  $(".js-when-time") && ($(".js-when-time").textContent = D.event.marriage.label);
   $(".js-venue")     && ($(".js-venue").textContent     = D.event.venueName);
-  $(".js-venue-city")&& ($(".js-venue-city").textContent= D.event.venueCity);
+  $(".js-venue-city")&& ($(".js-venue-city").textContent= D.event.venueAddress || D.event.venueCity);
   $(".js-dress")     && ($(".js-dress").textContent     = D.event.dressCode);
   const dw = $(".closing__date"); if (dw) dw.textContent = D.event.dateWords;
 
   const mapA = $(".js-map");
   if (mapA && D.event.mapUrl) { mapA.href = D.event.mapUrl; mapA.target = "_blank"; mapA.rel = "noopener"; mapA.hidden = false; }
-
-  [".js-rsvp", ".js-rsvp2"].forEach(sel => {
-    const a = $(sel);
-    if (a && D.event.rsvpUrl) { a.href = D.event.rsvpUrl; a.target = "_blank"; a.rel = "noopener"; a.hidden = false; }
-  });
 
   /* ---------- 2. build the A–Z trail ----------------------------- */
   const list = $(".js-trail");
@@ -77,20 +72,30 @@
   const calBtn = $(".js-cal");
   if (calBtn) {
     calBtn.addEventListener("click", () => {
-      const start = new Date(D.event.dateISO);
-      const end = new Date(start.getTime() + 4 * 3600000); // 4-hour event
       const fmt = dt => dt.toISOString().replace(/[-:]/g, "").split(".")[0] + "Z";
+      const loc = `${D.event.venueName}, ${D.event.venueAddress || ""}, ${D.event.venueCity}`.replace(/,\s*,/g, ",");
+      const events = [
+        { start: D.event.reception.dateISO, summary: `${D.couple.groom} & ${D.couple.bride} — Reception` },
+        { start: D.event.marriage.dateISO, summary: `${D.couple.groom} & ${D.couple.bride} — Marriage` },
+      ];
       const ics = [
         "BEGIN:VCALENDAR", "VERSION:2.0", "PRODID:-//AtoZ//Invite//EN",
-        "BEGIN:VEVENT",
-        `UID:${Date.now()}@atoz-invite`,
-        `DTSTAMP:${fmt(new Date())}`,
-        `DTSTART:${fmt(start)}`,
-        `DTEND:${fmt(end)}`,
-        `SUMMARY:${D.couple.groom} & ${D.couple.bride} — Wedding`,
-        `LOCATION:${D.event.venueName}, ${D.event.venueCity}`,
-        "DESCRIPTION:A to Z — A Chennai Love Story. Come help us close the loop.",
-        "END:VEVENT", "END:VCALENDAR",
+        ...events.flatMap((ev, i) => {
+          const start = new Date(ev.start);
+          const end = new Date(start.getTime() + 4 * 3600000);
+          return [
+            "BEGIN:VEVENT",
+            `UID:atoz-${i}-${Date.now()}@atoz-invite`,
+            `DTSTAMP:${fmt(new Date())}`,
+            `DTSTART:${fmt(start)}`,
+            `DTEND:${fmt(end)}`,
+            `SUMMARY:${ev.summary}`,
+            `LOCATION:${loc}`,
+            "DESCRIPTION:A to Z — A Chennai Love Story. Come help us close the loop.",
+            "END:VEVENT",
+          ];
+        }),
+        "END:VCALENDAR",
       ].join("\r\n");
       const url = URL.createObjectURL(new Blob([ics], { type: "text/calendar" }));
       const a = document.createElement("a");

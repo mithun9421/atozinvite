@@ -18,15 +18,22 @@ window.INVITE = {
 
   /* ---------- THE DAY ---------------------------------------------- */
   event: {
-    dateISO: "2027-01-24T18:00:00+05:30", // 24 Jan 2027, 6:00 PM IST
-    dateBig: "24 · 01 · 2027",
-    dateWords: "Sunday, the Twenty-Fourth of January, Two Thousand Twenty-Seven",
-    time: "6:00 in the evening",
-    venueName: "[ venue name ]",   // ← set this
+    dateISO: "2027-01-24T18:00:00+05:30", // marriage — used for countdown
+    dateBig: "23 & 24 · 01 · 2027",
+    dateWords: "Saturday the Twenty-Third and Sunday the Twenty-Fourth of January, Two Thousand Twenty-Seven",
+    reception: {
+      dateISO: "2027-01-23T18:00:00+05:30",
+      label: "Reception · 23 Jan 2027",
+    },
+    marriage: {
+      dateISO: "2027-01-24T18:00:00+05:30",
+      label: "Marriage · 24 Jan 2027",
+    },
+    venueName: "MP Wedding & Convention",
+    venueAddress: "No. 8, Sembium Redhills Main Road, Kathirvedu, Puzhal",
     venueCity: "Chennai, Tamil Nadu",
     dressCode: "Festive Indian · think marigold, maroon & gold",
-    mapUrl: "",                    // ← optional: paste a Google Maps link
-    rsvpUrl: "",                   // ← optional: paste a form / wa.me / mailto link
+    mapUrl: "https://share.google/kLPZKZQNoWPKVNp86",
   },
 
   /* ---------- THE 26 DATES (your real Chennai trail) --------------- *
