@@ -165,7 +165,11 @@ h2 {
   position: absolute; inset: 0; z-index: -1; opacity: .06; mix-blend-mode: overlay;
   background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='120' height='120'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2'/></filter><rect width='100%25' height='100%25' filter='url(%23n)'/></svg>");
 }
-.cover__inner { padding: var(--pad); }
+.cover__inner {
+  padding: var(--pad);
+  /* extra bottom clearance so the venue pill never crowds the scroll cue below it */
+  padding-bottom: calc(var(--pad) + clamp(2.5rem, 9vh, 4.5rem));
+}
 .cover .kicker { color: var(--rose); margin-bottom: clamp(1.4rem, 5vh, 2.6rem); }
 .cover__names {
   font-family: var(--serif);
