@@ -40,8 +40,8 @@
         <span class="trail__letter">${t.letter}</span>
         <div class="trail__body">
           <p class="trail__place">${t.place}${t.locked ? '<span class="trail__lock">🔒</span>' : ""}</p>
-          <p class="trail__area">${t.area}</p>
-          <p class="trail__note">${t.note}</p>
+          ${t.area ? `<p class="trail__area">${t.area}</p>` : ""}
+          ${t.note ? `<p class="trail__note">${t.note}</p>` : ""}
         </div>
       </li>`).join("");
   }
